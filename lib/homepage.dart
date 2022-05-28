@@ -1,6 +1,5 @@
-import 'package:firstapp/detailedpage.dart';
 import 'package:flutter/material.dart';
-import 'package:like_button/like_button.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -10,58 +9,59 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final TextEditingController _fieldController = TextEditingController();
-  String _inputText = "Empty!";
+  String dateTime = "Empty!";
+
+  @override
+  void initState() {
+    saveDateTime();
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        title: Text("Home Page"),
-        leading: Icon(Icons.arrow_back),
-      ),
-      body: _body(context),
-    );
-  }
-
-  Widget _body(BuildContext context) {
-    return Column(
-      children: [
-        TextField(
-          controller: _fieldController,
-          decoration: InputDecoration(hintText: "Type Here"),
+        appBar: AppBar(
+          title: Text("Home Page"),
+          actions: [
+            OutlinedButton(
+              style: ButtonStyle(
+                  backgroundColor: MaterialStateProperty.all(Colors.green)),
+              onPressed: () {
+                getAndDisplayDateTime();
+              },
+              child: Text(
+                "Date & Time",
+                style: TextStyle(color: Colors.white),
+              ),
+            )
+          ],
         ),
-        ElevatedButton(
-            onPressed: () {
-              // print("clicked this button");
-              _inputText = _fieldController.text;
-              setState(() {});
-              print(_inputText);
-            },
-            child: Text("Click Here")),
-        Text(_inputText),
-        _likeButton(),
-        _detailedPageButton(context)
-      ],
+        body: _body());
+  }
+
+  Widget _body() {
+    return Center(
+      child: Text("Last Opened at: $dateTime"),
     );
   }
 
-  Widget _detailedPageButton(BuildContext context) {
-    return IconButton(
-        onPressed: () {
-          Navigator.of(context).push(MaterialPageRoute(builder: (context) {
-            return DetailedPage();
-          }));
-        },
-        icon: Icon(Icons.arrow_forward));
+  saveDateTime() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
+    DateTime currentDate = DateTime.now();
+    String stringDateTime = currentDate.toIso8601String();
+
+    await pref.setString("currentDateTime", stringDateTime);
   }
 
-  Widget _likeButton() {
-    return LikeButton(
-      // onTap: (value){
+  getAndDisplayDateTime() async {
+    SharedPreferences pref = await SharedPreferences.getInstance();
 
-      // },
-      bubblesSize: 500,
-    );
+    String savedDateTime = pref.getString("currentDateTime").toString();
+
+    DateTime date = DateTime.parse(savedDateTime);
+
+    setState(() {
+      dateTime = date.hour.toString() + " : " + date.minute.toString();
+    });
   }
 }
