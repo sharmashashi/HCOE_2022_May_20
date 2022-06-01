@@ -1,4 +1,6 @@
+import 'package:firstapp/counter_app/counter_appV.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,6 +22,12 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        floatingActionButton: FloatingActionButton(
+          onPressed: () {
+            Get.to(CounterApp());
+          },
+          child: Icon(Icons.arrow_forward)
+        ),
         appBar: AppBar(
           title: Text("Home Page"),
           actions: [

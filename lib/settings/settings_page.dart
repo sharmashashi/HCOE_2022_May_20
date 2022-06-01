@@ -1,3 +1,4 @@
+import 'package:firstapp/settings/expanded_menu.dart';
 import 'package:flutter/material.dart';
 
 class SettingsPage extends StatefulWidget {
@@ -22,10 +23,11 @@ class _SettingsPageState extends State<SettingsPage> {
   final List colorList = [Colors.blue, Colors.green, Colors.amber.shade600];
 
   Widget loadingIndicator = CircularProgressIndicator();
-
+  Widget expandedItem = SizedBox();
+  bool expandedMenuItem = false;
   removeLoadingAfterDelay() async {
     print("Inside remove loading after delay function");
-    await Future.delayed(Duration(seconds: 5));
+    await Future.delayed(Duration(seconds: 0));
     loadingIndicator = SizedBox();
     setState(() {});
   }
@@ -53,14 +55,13 @@ class _SettingsPageState extends State<SettingsPage> {
     return Stack(
       children: [
         SingleChildScrollView(
-          physics: AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
+          physics:
+              AlwaysScrollableScrollPhysics(parent: BouncingScrollPhysics()),
           child: Column(
-            children: [ _searchBar(), _items()],
+            children: [_searchBar(), _items()],
           ),
         ),
-        Positioned(
-          
-          child: loadingIndicator)
+        Positioned(child: loadingIndicator)
       ],
     );
   }
@@ -93,12 +94,12 @@ class _SettingsPageState extends State<SettingsPage> {
   Widget _items() {
     return Column(
       children: [
-        for (int i = 0; i < 30; i++)
-          _menuItem(
-              iconData: iconList.last,
-              iconColor: colorList.last,
-              title: settingsMenuData.last['title'],
-              subtitle: settingsMenuData.last['subtitle']),
+        // for (int i = 0; i < 30; i++)
+        //   _menuItem(
+        //       iconData: iconList.last,
+        //       iconColor: colorList.last,
+        //       title: settingsMenuData.last['title'],
+        //       subtitle: settingsMenuData.last['subtitle']),
         for (int i = 0; i < iconList.length; i++)
           _menuItem(
             iconData: iconList[i],
@@ -115,38 +116,62 @@ class _SettingsPageState extends State<SettingsPage> {
       required Color iconColor,
       required String title,
       required String subtitle}) {
-    return Padding(
-      padding: const EdgeInsets.all(10.0),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+    return GestureDetector(
+      onTap: () {
+        toggleMenuItem();
+      },
+      child: Column(
         children: [
-          Container(
-            margin: EdgeInsets.only(right: 10),
-            padding: EdgeInsets.all(10),
-            decoration: BoxDecoration(shape: BoxShape.circle, color: iconColor),
-            child: Icon(
-              iconData,
-              color: Colors.black,
+          Padding(
+            padding: const EdgeInsets.all(10.0),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  margin: EdgeInsets.only(right: 10),
+                  padding: EdgeInsets.all(10),
+                  decoration:
+                      BoxDecoration(shape: BoxShape.circle, color: iconColor),
+                  child: Icon(
+                    iconData,
+                    color: Colors.black,
+                  ),
+                ),
+                // SizedBox(
+                //   width: 5,
+                // ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(title, style: TextStyle(color: Colors.white)),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Text(
+                      subtitle,
+                      style: TextStyle(color: Colors.grey, fontSize: 12),
+                    )
+                  ],
+                )
+              ],
             ),
           ),
-          // SizedBox(
-          //   width: 5,
-          // ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(title, style: TextStyle(color: Colors.white)),
-              SizedBox(
-                height: 5,
-              ),
-              Text(
-                subtitle,
-                style: TextStyle(color: Colors.grey, fontSize: 12),
-              )
-            ],
-          )
+          expandedItem
         ],
       ),
     );
+  }
+
+
+  toggleMenuItem() {
+    if (expandedMenuItem == true) {
+      expandedItem = SizedBox();
+      // expandedMenuItem = false;
+    } else {
+      expandedItem = ExpandedMenu();
+      // expandedMenuItem = true;
+    }
+    expandedMenuItem = !expandedMenuItem;
+    setState(() {});
   }
 }
