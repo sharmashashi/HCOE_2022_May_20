@@ -7,16 +7,13 @@ class ComingSoon extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-        padding: EdgeInsets.all(10),
-        color: Colors.blue,
-        height: Get.height * .35,
+        padding: EdgeInsets.symmetric(vertical: 10),
+        color: Colors.transparent,
+        height: Get.height * .3,
         width: Get.width,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _title(),
-            _movieList()
-          ],
+          children: [_title(), _movieList()],
         ));
   }
 
@@ -28,9 +25,17 @@ class ComingSoon extends StatelessWidget {
 
   _movieList() {
     return Expanded(
-      child: Container(
-        color: Colors.yellow,
-        
+      child: ListView(
+        scrollDirection: Axis.horizontal,
+        children: [
+          for (int i = 0; i < 10; i++)
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: Image.asset(
+                "assets/pumdikot.png",
+              ),
+            )
+        ],
       ),
     );
   }
