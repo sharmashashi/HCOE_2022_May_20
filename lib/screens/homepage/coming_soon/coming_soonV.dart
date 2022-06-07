@@ -1,8 +1,12 @@
+import 'package:firstapp/screens/homepage/coming_soon/coming_soonVM.dart';
+import 'package:firstapp/screens/homepage/detailed_page/detailed_pageV.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class ComingSoon extends StatelessWidget {
-  const ComingSoon({Key? key}) : super(key: key);
+  ComingSoon({Key? key}) : super(key: key);
+
+  final ComingSoonViewModel viewModel = ComingSoonViewModel();
 
   @override
   Widget build(BuildContext context) {
@@ -24,19 +28,27 @@ class ComingSoon extends StatelessWidget {
   }
 
   _movieList() {
-    return Expanded(
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: [
-          for (int i = 0; i < 10; i++)
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: Image.asset(
-                "assets/pumdikot.png",
-              ),
-            )
-        ],
-      ),
-    );
+    return GetBuilder<ComingSoonViewModel>(
+        init: viewModel,
+        builder: (context) {
+          return Expanded(
+            child: ListView(
+              scrollDirection: Axis.horizontal,
+              children: [
+                viewModel.loading,
+                for (String each in viewModel.imageList)
+                  GestureDetector(
+                    onTap: () {
+                      Get.to(DetailedPage());
+                    },
+                    child: Padding(
+                      padding: EdgeInsets.all(10),
+                      child: Image.network(each),
+                    ),
+                  )
+              ],
+            ),
+          );
+        });
   }
 }

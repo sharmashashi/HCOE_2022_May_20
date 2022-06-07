@@ -20,27 +20,24 @@ class SearchBar extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 10.0),
             child: Column(
               children: [
-                SizedBox(
-                  // height: height,
-                  child: TextField(
-                    onChanged: (value) {
-                      viewModel.onChanged(value);
-                    },
-                    controller: viewModel.fieldController,
-                    cursorColor: Colors.grey,
-                    decoration: InputDecoration(
-                        hintText: "Type movie name",
-                        filled: true,
-                        fillColor: Colors.grey.shade700,
-                        isDense: true,
-                        enabledBorder: fieldBorder,
-                        focusedBorder: fieldBorder,
-                        suffixIcon: IconButton(
-                          color: Colors.grey,
-                          icon: Icon(Icons.search),
-                          onPressed: () {},
-                        )),
-                  ),
+                TextField(
+                  onChanged: (value) {
+                    viewModel.onChanged(value);
+                  },
+                  controller: viewModel.fieldController,
+                  cursorColor: Colors.grey,
+                  decoration: InputDecoration(
+                      hintText: "Type movie name",
+                      filled: true,
+                      fillColor: Colors.grey.shade700,
+                      isDense: true,
+                      enabledBorder: fieldBorder,
+                      focusedBorder: fieldBorder,
+                      suffixIcon: IconButton(
+                        color: Colors.grey,
+                        icon: Icon(Icons.search),
+                        onPressed: () {},
+                      )),
                 ),
                 viewModel.showSuggestion ? _suggestion() : SizedBox()
               ],

@@ -8,58 +8,69 @@ class MovieList extends StatelessWidget {
   MovieListViewModel viewModel = MovieListViewModel();
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Flexible(
-            child: _genres(),
-            flex: 1,
-          ),
-          Flexible(
-            child: _list(),
-            flex: 5,
-          )
-        ],
-      ),
+    return Column(
+      // mainAxisSize: MainAxisSize.min,
+      children: [
+        _genres(),
+        _list(),
+      ],
     );
   }
 
   _genres() {
     return GetBuilder<MovieListViewModel>(
         init: viewModel,
-        builder: (context) {
+        builder: (_) {
           return Container(
-              color: Colors.blue,
+              alignment: Alignment.center,
               height: 30,
               child: ListView(scrollDirection: Axis.horizontal, children: [
-                for (int i = 0; i < viewModel.genreList.length; i++)
-                  _singleGenre(title: viewModel.genreList[i], index: i)
+                for (String each in viewModel.genreList)
+                  _singleGenre(index: viewModel.genreList.indexOf(each))
+
+                // for (int i = 0; i < viewModel.genreList.length; i++)
+                //   _singleGenre(title: viewModel.genreList[i], index: i)
               ]));
         });
   }
 
-  _singleGenre({required String title, required int index}) {
+  _singleGenre({required int index}) {
     return GestureDetector(
       onTap: () {
-        viewModel.onGenreClicked();
+        viewModel.onGenreClicked(index);
       },
       child: Container(
+          alignment: Alignment.center,
+          margin: EdgeInsets.only(right: 10),
+          padding: EdgeInsets.all(5),
           decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5),
               color: viewModel.currentGenreIndex == index
                   ? Colors.red
-                  : Colors.grey.shade900),
-          child: Text(title, style: TextStyle(color: Colors.white))),
+                  : Colors.grey.shade700),
+          child: Text(viewModel.genreList[index],
+              style: TextStyle(color: Colors.white))),
     );
   }
 
   _list() {
-    return Container(
-      height: Get.height * .5,
-      color: Colors.transparent,
-      child: ListView(
-        children: [for (int i = 0; i < 10; i++) MovieCard()],
-      ),
-    );
+    return GetBuilder<MovieListViewModel>(
+        init: viewModel,
+        builder: (_) {
+          return Expanded(
+            child: ListView(
+              children: [
+                for (var each in viewModel.movieList)
+                  MovieCard(
+                    title: each['title'],
+                    duration: each['runtime'].toString(),
+                    imageUrl: each['medium_cover_image'],
+                    rating: each['rating'].toString(),
+                    year: each['year'].toString(),
+                  )
+              ],
+            ),
+          );
+        });
   }
 }

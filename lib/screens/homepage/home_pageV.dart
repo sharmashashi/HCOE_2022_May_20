@@ -6,7 +6,7 @@ import 'package:get/get.dart';
 
 class HomePage extends StatelessWidget {
   const HomePage({Key? key}) : super(key: key);
-  final searchBarHeight = 80.0;
+  final searchBarHeight = 50.0;
 
   @override
   Widget build(BuildContext context) {
@@ -29,8 +29,11 @@ class HomePage extends StatelessWidget {
             width: Get.width,
             height: Get.height - searchBarHeight,
             child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [ComingSoon(), MovieList()],
+              children: [
+                SizedBox(height: searchBarHeight),
+                ComingSoon(),
+                Expanded(child: MovieList())
+              ],
             ),
           ),
         ),

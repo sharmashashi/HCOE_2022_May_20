@@ -3,7 +3,16 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MovieCard extends StatelessWidget {
-  const MovieCard({Key? key}) : super(key: key);
+  final String imageUrl, title, rating, duration, year;
+
+  MovieCard(
+      {required this.imageUrl,
+      required this.title,
+      required this.rating,
+      required this.duration,
+      required this.year,
+      Key? key})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -23,7 +32,7 @@ class MovieCard extends StatelessWidget {
         child: Row(children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.asset("assets/ronb.png"),
+            child: Image.network(imageUrl),
           ),
           _movieInfo()
         ]),
@@ -38,12 +47,21 @@ class MovieCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text("Some Movie title",
+          Text(title,
               style:
                   TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          Text("Rating: 7.5",style: style,),
-          Text("120 Min",style: style,),
-          Text("Year: 2015",style: style,)
+          Text(
+            "Rating: $rating",
+            style: style,
+          ),
+          Text(
+            "$duration Min",
+            style: style,
+          ),
+          Text(
+            "Year: $year",
+            style: style,
+          )
         ],
       ),
     );
