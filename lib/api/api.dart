@@ -16,4 +16,12 @@ class Api {
     var decoded = jsonDecode(response.body);
     return decoded;
   }
+
+  static Future<Map> searchMovies(String queryTerm) async {
+    final url = "https://yts.mx/api/v2/list_movies.json?query_term=$queryTerm";
+    Uri uri = Uri.parse(url);
+    http.Response response = await http.get(uri);
+    var decoded = jsonDecode(response.body);
+    return decoded;
+  }
 }

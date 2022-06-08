@@ -1,8 +1,11 @@
+import 'package:firstapp/models/list_movie_model.dart';
+import 'package:firstapp/utils/duration_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class DetailedPage extends StatelessWidget {
-  const DetailedPage({Key? key}) : super(key: key);
+  final SingleMoiveModel model;
+  DetailedPage({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -34,8 +37,8 @@ class DetailedPage extends StatelessWidget {
         height: 250,
         child: Stack(
           children: [
-            Image.asset(
-              "assets/pumdikot.png",
+            Image.network(
+              model.imageUrl,
               fit: BoxFit.fill,
               height: 250,
               width: Get.width,
@@ -74,7 +77,7 @@ class DetailedPage extends StatelessWidget {
             ),
             Positioned(
               child: Text(
-                "1 h 20 m",
+                minutesToHourMinutes(int.parse(model.runTime)),
                 style: TextStyle(color: Colors.white),
               ),
               bottom: 0,
@@ -88,8 +91,8 @@ class DetailedPage extends StatelessWidget {
     return Container(
       width: Get.width,
       color: Colors.black,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+      child: ListView(
+        // crossAxisAlignment: CrossAxisAlignment.start,
         children: [_ratings(), _titleDescription(), _actors()],
       ),
     );
@@ -101,13 +104,13 @@ class DetailedPage extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('Some Title',
+          Text(model.title,
               style: TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 16)),
           Text(
-            "some description",
+            model.description,
             style: TextStyle(color: Colors.grey, fontSize: 12),
           )
         ],
@@ -126,20 +129,23 @@ class DetailedPage extends StatelessWidget {
                   color: Colors.white,
                   fontWeight: FontWeight.bold,
                   fontSize: 16)),
-                  SizedBox(height: 10,),
+          SizedBox(
+            height: 10,
+          ),
           SizedBox(
             height: 80,
             width: Get.width,
             child: ListView(
               scrollDirection: Axis.horizontal,
               children: [
-                for (int i = 0; i < 10; i++) Padding(
-                  padding: const EdgeInsets.only(right:8.0),
-                  child: ClipRRect(
-                    borderRadius:BorderRadius.circular(8),
-                    child: Image.asset("assets/ronb.png"),
-                  ),
-                )
+                for (int i = 0; i < 10; i++)
+                  Padding(
+                    padding: const EdgeInsets.only(right: 8.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8),
+                      child: Image.asset("assets/ronb.png"),
+                    ),
+                  )
               ],
             ),
           )
@@ -157,11 +163,7 @@ class DetailedPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           Text(
-            "18+",
-            style: style,
-          ),
-          Text(
-            "Action",
+            model.genres.first,
             style: style,
           ),
           Row(
@@ -170,7 +172,7 @@ class DetailedPage extends StatelessWidget {
                 Icons.star,
                 color: Colors.yellow,
               ),
-              Text("5.0", style: style)
+              Text(model.rating, style: style)
             ],
           )
         ],

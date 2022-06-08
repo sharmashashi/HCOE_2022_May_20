@@ -36,14 +36,16 @@ class ComingSoon extends StatelessWidget {
               scrollDirection: Axis.horizontal,
               children: [
                 viewModel.loading,
-                for (String each in viewModel.imageList)
+                for (var each in viewModel.movieList)
                   GestureDetector(
                     onTap: () {
-                      Get.to(DetailedPage());
+                      Get.to(DetailedPage(
+                       model: each,
+                      ));
                     },
                     child: Padding(
                       padding: EdgeInsets.all(10),
-                      child: Image.network(each),
+                      child: Image.network(each.imageUrl),
                     ),
                   )
               ],

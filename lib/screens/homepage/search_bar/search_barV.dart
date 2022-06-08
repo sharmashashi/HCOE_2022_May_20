@@ -1,4 +1,6 @@
+import 'package:firstapp/screens/homepage/movie_list/movie_cardV.dart';
 import 'package:firstapp/screens/homepage/search_bar/search_barVM.dart';
+import 'package:firstapp/screens/homepage/search_bar/suggestion_card.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
@@ -54,7 +56,13 @@ class SearchBar extends StatelessWidget {
       decoration: BoxDecoration(
           color: Colors.white, borderRadius: BorderRadius.circular(10)),
       child: ListView(
-        children: [viewModel.loadingSuggestion],
+        children: [
+          viewModel.loadingSuggestion,
+          for (var each in viewModel.movieList)
+            SuggestionCard(
+              model: each,
+            )
+        ],
       ),
     );
   }

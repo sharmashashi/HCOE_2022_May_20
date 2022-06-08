@@ -1,24 +1,19 @@
+import 'package:firstapp/models/list_movie_model.dart';
 import 'package:firstapp/screens/homepage/detailed_page/detailed_pageV.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class MovieCard extends StatelessWidget {
-  final String imageUrl, title, rating, duration, year;
-
-  MovieCard(
-      {required this.imageUrl,
-      required this.title,
-      required this.rating,
-      required this.duration,
-      required this.year,
-      Key? key})
-      : super(key: key);
+  final SingleMoiveModel model;
+  MovieCard({Key? key, required this.model}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-        Get.to(DetailedPage());
+        Get.to(DetailedPage(
+          model: model,
+        ));
       },
       child: Container(
         padding: EdgeInsets.all(10),
@@ -32,7 +27,7 @@ class MovieCard extends StatelessWidget {
         child: Row(children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(imageUrl),
+            child: Image.network(model.imageUrl),
           ),
           _movieInfo()
         ]),
@@ -42,27 +37,30 @@ class MovieCard extends StatelessWidget {
 
   _movieInfo() {
     final TextStyle style = TextStyle(color: Colors.white, fontSize: 12);
-    return Padding(
-      padding: const EdgeInsets.only(left: 8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(title,
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold)),
-          Text(
-            "Rating: $rating",
-            style: style,
-          ),
-          Text(
-            "$duration Min",
-            style: style,
-          ),
-          Text(
-            "Year: $year",
-            style: style,
-          )
-        ],
+    return Flexible(
+      child: Padding(
+        padding: const EdgeInsets.only(left: 8.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(model.title,
+                overflow: TextOverflow.ellipsis,
+                style: TextStyle(
+                    color: Colors.white, fontWeight: FontWeight.bold)),
+            Text(
+              "Rating: ${model.rating}",
+              style: style,
+            ),
+            Text(
+              "${model.runTime} Min",
+              style: style,
+            ),
+            Text(
+              "Year: ${model.year}",
+              style: style,
+            )
+          ],
+        ),
       ),
     );
   }

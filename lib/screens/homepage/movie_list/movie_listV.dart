@@ -62,11 +62,7 @@ class MovieList extends StatelessWidget {
               children: [
                 for (var each in viewModel.movieList)
                   MovieCard(
-                    title: each['title'],
-                    duration: each['runtime'].toString(),
-                    imageUrl: each['medium_cover_image'],
-                    rating: each['rating'].toString(),
-                    year: each['year'].toString(),
+                   model: each,
                   )
               ],
             ),
