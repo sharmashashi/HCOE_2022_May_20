@@ -22,11 +22,15 @@ class MovieListViewModel extends GetxController {
   List<SingleMoiveModel> movieList = [];
 
   fetchMovies() async {
-    var result = await Api.listMovies(genre: genreList[_currentGenreIndex]);
+    movieList.clear();
+    update();
+    var result = await Api.listMovies(
+        genre: genreList[_currentGenreIndex], page: _pageNumber);
     List _tempList = result['data']['movies'];
 
     for (var each in _tempList) {
       SingleMoiveModel object = SingleMoiveModel(
+        id: each['id'],
         title: each['title'],
         runTime: each['runtime'].toString(),
         imageUrl: each['medium_cover_image'],
@@ -48,6 +52,21 @@ class MovieListViewModel extends GetxController {
   onGenreClicked(int index) {
     _currentGenreIndex = index;
     update();
+    fetchMovies();
+  }
+
+  int _pageNumber = 1;
+  int get pageNumber => _pageNumber;
+
+  void onPrevClicked() {
+    if (_pageNumber > 1) {
+      _pageNumber--;
+      fetchMovies();
+    }
+  }
+
+  void onNextClicked() {
+    _pageNumber++;
     fetchMovies();
   }
 }

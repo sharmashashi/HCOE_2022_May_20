@@ -62,11 +62,65 @@ class MovieList extends StatelessWidget {
               children: [
                 for (var each in viewModel.movieList)
                   MovieCard(
-                   model: each,
-                  )
+                    model: each,
+                  ),
+                _pageNumber()
               ],
             ),
           );
-        });
+      });
+  }
+
+  _pageNumber() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        _pageNumberBtn("Prev", BUTTON_TYPE.PREV,onPressed: viewModel.onPrevClicked),
+        Text(viewModel.pageNumber.toString(), style: TextStyle(color: Colors.white, fontSize: 16)),
+        _pageNumberBtn("Next", BUTTON_TYPE.NEXT,onPressed: viewModel.onNextClicked)
+      ],
+    );
+  }
+
+  _pageNumberBtn(String btnName, BUTTON_TYPE btnType,
+      {required Function onPressed}) {
+    return Padding(
+      padding: const EdgeInsets.only(top: 8.0),
+      child: GestureDetector(
+        onTap: () {
+          onPressed();
+        },
+        child: Container(
+          margin: const EdgeInsets.all(8.0),
+          padding: EdgeInsets.all(5),
+          decoration: BoxDecoration(
+              color: Colors.grey.shade700,
+              borderRadius: BorderRadius.circular(2)),
+          child: Row(
+            children: [
+              btnType == BUTTON_TYPE.PREV
+                  ? Icon(
+                      Icons.keyboard_arrow_left,
+                      color: Colors.white,
+                    )
+                  : SizedBox(),
+              Text(
+                btnName,
+                style:
+                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+              ),
+              btnType == BUTTON_TYPE.NEXT
+                  ? Icon(
+                      Icons.keyboard_arrow_right,
+                      color: Colors.white,
+                    )
+                  : SizedBox(),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
+
+enum BUTTON_TYPE { PREV, NEXT }

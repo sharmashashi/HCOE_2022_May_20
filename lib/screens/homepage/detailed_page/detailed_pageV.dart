@@ -1,4 +1,5 @@
 import 'package:firstapp/models/list_movie_model.dart';
+import 'package:firstapp/screens/homepage/detailed_page/detailed_pageVM.dart';
 import 'package:firstapp/utils/duration_converter.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -119,39 +120,59 @@ class DetailedPage extends StatelessWidget {
   }
 
   _actors() {
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Actors",
-              style: TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16)),
-          SizedBox(
-            height: 10,
-          ),
-          SizedBox(
-            height: 80,
-            width: Get.width,
-            child: ListView(
-              scrollDirection: Axis.horizontal,
+    return GetBuilder<DetailedPageViewModel>(
+        init: DetailedPageViewModel(model),
+        builder: (viewModel) {
+          return Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                for (int i = 0; i < 10; i++)
-                  Padding(
-                    padding: const EdgeInsets.only(right: 8.0),
-                    child: ClipRRect(
-                      borderRadius: BorderRadius.circular(8),
-                      child: Image.asset("assets/ronb.png"),
-                    ),
-                  )
+                const Text("Actors",
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16)),
+                const SizedBox(
+                  height: 10,
+                ),
+                SizedBox(
+                  height: 80,
+                  width: Get.width,
+                  child: ListView(
+                    scrollDirection: Axis.horizontal,
+                    children: [
+                      viewModel.loading,
+                      viewModel.castModelList.isEmpty
+                          ? viewModel.isLoading
+                              ? SizedBox()
+                              : const Text(
+                                  "Couldn't found cast details",
+                                  style: TextStyle(color: Colors.white),
+                                )
+                          : Row(children: [
+                              for (var each in viewModel.castModelList)
+                                Padding(
+                                  padding: const EdgeInsets.only(right: 8.0),
+                                  child: Column(
+                                    children: [
+                                      ClipRRect(
+                                        borderRadius: BorderRadius.circular(8),
+                                        child: Image.network(each.photo),
+                                      ),
+                                      Text(each.actorName,
+                                          style: TextStyle(color: Colors.white))
+                                    ],
+                                  ),
+                                )
+                            ])
+                    ],
+                  ),
+                )
               ],
             ),
-          )
-        ],
-      ),
-    );
+          );
+        });
   }
 
   _ratings() {

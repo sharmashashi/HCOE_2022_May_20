@@ -19,6 +19,7 @@ class ComingSoonViewModel extends GetxController {
 
     for (var each in _tempList) {
       SingleMoiveModel object = SingleMoiveModel(
+        id: each['id'],
         title: each['title'],
         runTime: each['runtime'].toString(),
         imageUrl: each['medium_cover_image'],
