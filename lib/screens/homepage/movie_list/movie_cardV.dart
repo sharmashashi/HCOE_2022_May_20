@@ -27,7 +27,12 @@ class MovieCard extends StatelessWidget {
         child: Row(children: [
           ClipRRect(
             borderRadius: BorderRadius.circular(8),
-            child: Image.network(model.imageUrl),
+            child: Image.network(
+              model.imageUrl,
+              errorBuilder: (_, __, ___) {
+                return Text("Error loading image");
+              },
+            ),
           ),
           _movieInfo()
         ]),

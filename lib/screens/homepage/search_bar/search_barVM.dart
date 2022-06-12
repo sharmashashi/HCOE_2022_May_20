@@ -29,6 +29,7 @@ class SearchBarViewModel extends GetxController {
 
     for (var each in _tempList) {
       SingleMoiveModel object = SingleMoiveModel(
+        torrents: each['torrents'],
         id: each['id'],
         title: each['title'],
         runTime: each['runtime'].toString(),

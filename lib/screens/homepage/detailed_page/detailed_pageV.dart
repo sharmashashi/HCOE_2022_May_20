@@ -92,10 +92,46 @@ class DetailedPage extends StatelessWidget {
     return Container(
       width: Get.width,
       color: Colors.black,
-      child: ListView(
-        // crossAxisAlignment: CrossAxisAlignment.start,
-        children: [_ratings(), _titleDescription(), _actors()],
-      ),
+      child: GetBuilder<DetailedPageViewModel>(
+          init: DetailedPageViewModel(model),
+          builder: (viewModel) {
+            return ListView(
+              // crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _ratings(),
+                _titleDescription(),
+                _downloadButtons(viewModel),
+                _actors(viewModel)
+              ],
+            );
+          }),
+    );
+  }
+
+  _downloadButtons(DetailedPageViewModel viewModel) {
+    return Row(
+      children: [
+        for (var each in model.torrents)
+          _singleDownloadButton(viewModel: viewModel, torrentModel: each)
+      ],
+    );
+  }
+
+  _singleDownloadButton(
+      {required SingleTorrentModel torrentModel,
+      required DetailedPageViewModel viewModel}) {
+    return Padding(
+      padding: const EdgeInsets.only(right: 8.0),
+      child: TextButton(
+          style: ButtonStyle(
+              backgroundColor: MaterialStateProperty.all(Colors.green)),
+          onPressed: () {
+            viewModel.download(torrentModel);
+          },
+          child: Text(
+            torrentModel.quality,
+            style: TextStyle(color: Colors.white),
+          )),
     );
   }
 
@@ -119,60 +155,56 @@ class DetailedPage extends StatelessWidget {
     );
   }
 
-  _actors() {
-    return GetBuilder<DetailedPageViewModel>(
-        init: DetailedPageViewModel(model),
-        builder: (viewModel) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+  _actors(DetailedPageViewModel viewModel) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const Text("Actors",
+              style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 16)),
+          const SizedBox(
+            height: 10,
+          ),
+          SizedBox(
+            height: 80,
+            width: Get.width,
+            child: ListView(
+              scrollDirection: Axis.horizontal,
               children: [
-                const Text("Actors",
-                    style: TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                        fontSize: 16)),
-                const SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  height: 80,
-                  width: Get.width,
-                  child: ListView(
-                    scrollDirection: Axis.horizontal,
-                    children: [
-                      viewModel.loading,
-                      viewModel.castModelList.isEmpty
-                          ? viewModel.isLoading
-                              ? SizedBox()
-                              : const Text(
-                                  "Couldn't found cast details",
-                                  style: TextStyle(color: Colors.white),
-                                )
-                          : Row(children: [
-                              for (var each in viewModel.castModelList)
-                                Padding(
-                                  padding: const EdgeInsets.only(right: 8.0),
-                                  child: Column(
-                                    children: [
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(8),
-                                        child: Image.network(each.photo),
-                                      ),
-                                      Text(each.actorName,
-                                          style: TextStyle(color: Colors.white))
-                                    ],
-                                  ),
-                                )
-                            ])
-                    ],
-                  ),
-                )
+                viewModel.loading,
+                viewModel.castModelList.isEmpty
+                    ? viewModel.isLoading
+                        ? SizedBox()
+                        : const Text(
+                            "Couldn't found cast details",
+                            style: TextStyle(color: Colors.white),
+                          )
+                    : Row(children: [
+                        for (var each in viewModel.castModelList)
+                          Padding(
+                            padding: const EdgeInsets.only(right: 8.0),
+                            child: Column(
+                              children: [
+                                ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.network(each.photo),
+                                ),
+                                Text(each.actorName,
+                                    style: TextStyle(color: Colors.white))
+                              ],
+                            ),
+                          )
+                      ])
               ],
             ),
-          );
-        });
+          )
+        ],
+      ),
+    );
   }
 
   _ratings() {
