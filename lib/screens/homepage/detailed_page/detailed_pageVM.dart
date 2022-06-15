@@ -3,9 +3,10 @@ import 'dart:io';
 import 'package:firstapp/api/api.dart';
 import 'package:firstapp/models/cast_model.dart';
 import 'package:firstapp/models/list_movie_model.dart';
+import 'package:firstapp/utils/constants.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get_state_manager/get_state_manager.dart';
-import 'package:http/http.dart';
+import 'package:get/get.dart';
+import 'package:http/http.dart' as http;
 import 'package:path_provider/path_provider.dart';
 import 'package:permission_handler/permission_handler.dart';
 
@@ -56,16 +57,26 @@ class DetailedPageViewModel extends GetxController {
   }
 
   void download(SingleTorrentModel tModel) async {
-    Permission permission = Permission.storage;
+    Permission permission = Permission.manageExternalStorage;
     PermissionStatus pStatus = await permission.request();
     if (pStatus.isGranted) {
-      Response response = await get(Uri.parse(tModel.downloadUrl));
+      Get.showSnackbar(GetSnackBar(
+        messageText: Text(
+          model.title,
+          style: const TextStyle(color: Colors.white),
+        ),
+        showProgressIndicator: true,
+        title: "Downloading",
+      ));
+      http.Response response = await http.get(Uri.parse(tModel.downloadUrl));
+      Get.closeCurrentSnackbar();
       var downloadedTorrentFileBytes = response.bodyBytes;
-      var dir = await getApplicationDocumentsDirectory();
-      String filePath = dir.path + "/${model.title}.torrent";
+      // var dir = await getApplicationDocumentsDirectory();
+      String filePath = "$FILE_DOWNLOAD_PATH${model.title}.torrent";
+
       File file = File(filePath);
+      file.create(recursive: true);
       file.writeAsBytesSync(downloadedTorrentFileBytes);
-      print(Directory(filePath).parent.listSync());
     } else {
       openAppSettings();
     }
