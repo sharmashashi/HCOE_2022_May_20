@@ -1,12 +1,14 @@
 import 'package:firebase_core/firebase_core.dart';
-import 'package:firstapp/noteapp/homepage/homepageV.dart';
+import 'package:firstapp/screens/login/loginV.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import 'screens/homepage/homepageV.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   runApp(GetMaterialApp(
-    home: HomePage(),
+    home: Login(),
   ));
 }

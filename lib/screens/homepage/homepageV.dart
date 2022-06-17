@@ -1,4 +1,4 @@
-import 'package:firstapp/noteapp/homepage/homepageVM.dart';
+import 'package:firstapp/screens/homepage/homepageVM.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatelessWidget {
