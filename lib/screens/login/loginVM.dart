@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firstapp/screens/homepage/homepageV.dart';
 import 'package:firstapp/services/firebase/firebase_authentication.dart';
 import 'package:firstapp/utils/utils.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ class LoginViewModel extends GetxController {
       await FirebaseEmailPasswordAuthentication.login(
           email: emailController.text, password: passwordController.text);
       Get.closeAllSnackbars();
+      Get.to(HomePage());
       showSnackbar(
           message: "Successfully Logged in!", duration: Duration(seconds: 2));
     } on FirebaseAuthException catch (e) {
