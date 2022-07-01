@@ -19,8 +19,8 @@ class NotePageViewModel extends GetxController {
     });
   }
 
-  List<QueryDocumentSnapshot> _noteList = [];
-  List<QueryDocumentSnapshot> get noteList => _noteList;
+  List<NoteModel> _noteList = [];
+  List<NoteModel> get noteList => _noteList;
   Future<void> fetchNotes() async {
     DocumentReference userDocument = FirebaseFirestore.instance
         .collection("notes")
@@ -28,13 +28,32 @@ class NotePageViewModel extends GetxController {
 
     var querySnapshot = await userDocument.collection("note").get();
 
-    _noteList = querySnapshot.docs;
+    // _noteList = querySnapshot.docs;
+    List<NoteModel> tempList = [];
+
+    for (var each in querySnapshot.docs) {
+      String imageUrl = "";
+      try {
+        imageUrl = each.get('imageUrl');
+      } catch (e) {
+        print(e);
+      }
+      tempList.add(NoteModel(
+          title: each.get('title'),
+          text: each.get('text'),
+          date: each.get('date'),
+          imageUrl: imageUrl,
+          documentId: each.get('documentId')));
+    }
+    _noteList = tempList;
+
     update();
   }
 
   onAddNoteClicked() async {
     await Get.to(EditNote(
-        model: NoteModel(text: "", title: "", date: "", documentId: "")));
+        model: NoteModel(
+            imageUrl: "", text: "", title: "", date: "", documentId: "")));
     refreshNotes();
   }
 

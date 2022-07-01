@@ -28,11 +28,7 @@ class NotePage extends StatelessWidget {
                   for (var each in viewModel.noteList)
                     NoteCard(
                       viewModel: viewModel,
-                      model: NoteModel(
-                          documentId: each.get('documentId'),
-                          title: each.get('title'),
-                          text: each.get('text'),
-                          date: each.get('date')),
+                      model: each,
                     )
                 ],
               ),
