@@ -16,11 +16,11 @@ class NoteCard extends StatelessWidget {
     return GestureDetector(
       onLongPress: () async{
         await noteCardViewModel.onLongPressCard(model);
-        viewModel.refreshNotes();
+        // viewModel.refreshNotes();
       },
       onTap: () async {
         await Get.to(EditNote(model: model));
-        viewModel.refreshNotes();
+        // viewModel.refreshNotes();
       },
       child: Container(
         // width: Get.width*.4,

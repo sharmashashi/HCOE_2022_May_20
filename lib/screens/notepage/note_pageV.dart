@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firstapp/model/noteM.dart';
 import 'package:firstapp/screens/notepage/note_card.dart';
 import 'package:firstapp/screens/notepage/note_pageVM.dart';
@@ -11,30 +12,47 @@ class NotePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder<NotePageViewModel>(
-        init: viewModel,
-        builder: (context) {
-          return Scaffold(
-            floatingActionButton: _floatingBtn(),
-            appBar: _appBar(),
-            body: RefreshIndicator(
-              onRefresh: () async {
-                await viewModel.refreshNotes();
-              },
-              child: GridView(
-                gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 3),
-                children: [
-                  for (var each in viewModel.noteList)
-                    NoteCard(
-                      viewModel: viewModel,
-                      model: each,
-                    )
-                ],
-              ),
-            ),
-          );
-        });
+    return Scaffold(
+      floatingActionButton: _floatingBtn(),
+      appBar: _appBar(),
+      body: StreamBuilder(
+        stream: viewModel.noteStream(),
+        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) {
+            return Text("No result found!");
+          } else {
+            viewModel.parseNoteSnapshot(snapshot);
+            return GridView(
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 3),
+              children: [
+                for (var each in viewModel.noteList)
+                  NoteCard(
+                    viewModel: viewModel,
+                    model: each,
+                  )
+              ],
+            );
+          }
+        },
+      ),
+      // body: RefreshIndicator(
+      //   onRefresh: () async {
+      //     await viewModel.refreshNotes();
+      //   },
+      //   child: GridView(
+      //     gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+      //         crossAxisCount: 3),
+      //     children: [
+      //       for (var each in viewModel.noteList)
+      //         NoteCard(
+      //           viewModel: viewModel,
+      //           model: each,
+      //         )
+      //     ],
+      //   ),
+      // ),
+    );
   }
 
   _appBar() {

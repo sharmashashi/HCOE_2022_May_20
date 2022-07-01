@@ -6,11 +6,11 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class NotePageViewModel extends GetxController {
-  @override
-  void onInit() {
-    super.onInit();
-    fetchNotes();
-  }
+  // @override
+  // void onInit() {
+  //   super.onInit();
+  //   // fetchNotes();
+  // }
 
   logout() {
     FirebaseAuth.instance.signOut().then((value) {
@@ -54,10 +54,40 @@ class NotePageViewModel extends GetxController {
     await Get.to(EditNote(
         model: NoteModel(
             imageUrl: "", text: "", title: "", date: "", documentId: "")));
-    refreshNotes();
+    // refreshNotes();
   }
 
   Future<void> refreshNotes() async {
     await fetchNotes();
+  }
+
+  Stream<QuerySnapshot> noteStream() {
+    return FirebaseFirestore.instance
+        .collection("notes")
+        .doc(FirebaseAuth.instance.currentUser!.email)
+        .collection("note")
+        .snapshots();
+  }
+
+  parseNoteSnapshot(AsyncSnapshot<QuerySnapshot> snapshot) {
+    List<NoteModel> tempList = [];
+
+    for (var each in snapshot.data!.docs) {
+      String imageUrl = "";
+      try {
+        imageUrl = each.get('imageUrl');
+      } catch (e) {
+        print(e);
+      }
+      tempList.add(NoteModel(
+          title: each.get('title'),
+          text: each.get('text'),
+          date: each.get('date'),
+          imageUrl: imageUrl,
+          documentId: each.get('documentId')));
+    }
+    _noteList = tempList;
+
+    // update();
   }
 }
