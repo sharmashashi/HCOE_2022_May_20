@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:firstapp/model/noteM.dart';
 import 'package:firstapp/screens/notepage/note_pageVM.dart';
 import 'package:firstapp/screens/notepage/noteeditpage/edit_noteV.dart';
@@ -14,7 +15,7 @@ class NoteCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GestureDetector(
-      onLongPress: () async{
+      onLongPress: () async {
         await noteCardViewModel.onLongPressCard(model);
         // viewModel.refreshNotes();
       },
@@ -54,8 +55,8 @@ class NoteCard extends StatelessWidget {
 }
 
 class NoteCardViewModel extends GetxController {
-  Future<void> onLongPressCard(NoteModel model) async{
-   await Get.dialog(AlertDialog(
+  Future<void> onLongPressCard(NoteModel model) async {
+    await Get.dialog(AlertDialog(
       title: Text("Delete this note?"),
       actions: [
         TextButton(
@@ -78,11 +79,13 @@ class NoteCardViewModel extends GetxController {
 
   Future<void> deleteNote(NoteModel model) async {
     String? email = FirebaseAuth.instance.currentUser!.email;
-    await FirebaseFirestore.instance
+    var docRef = FirebaseFirestore.instance
         .collection("notes")
         .doc(email)
         .collection("note")
-        .doc(model.documentId)
-        .delete();
+        .doc(model.documentId);
+    var imageUrl = (await docRef.get()).get("imageUrl");
+    await FirebaseStorage.instance.refFromURL(imageUrl).delete();
+    await docRef.delete();
   }
 }
