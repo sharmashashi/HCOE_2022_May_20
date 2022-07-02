@@ -1,18 +1,13 @@
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
-import 'package:firstapp/screens/login/loginV.dart';
-import 'package:firstapp/screens/notepage/note_pageV.dart';
+import 'package:firstapp/screens/homepage/homepageV.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp();
+  await Hive.initFlutter();
   runApp(GetMaterialApp(
-    routes: {
-      "/login": (context) => Login(),
-      "/notepage": (context) => NotePage()
-    },
-    home: FirebaseAuth.instance.currentUser == null ? Login() : NotePage(),
+    routes: {"/homepage": (context) => HomePage()},
+    home: HomePage(),
   ));
 }
