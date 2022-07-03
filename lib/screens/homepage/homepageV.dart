@@ -1,5 +1,6 @@
 import 'package:firstapp/screens/homepage/detailed_page/detailed_pageV.dart';
 import 'package:firstapp/screens/homepage/homepageVm.dart';
+import 'package:firstapp/screens/homepage/locationpage/locationV.dart';
 import 'package:firstapp/screens/homepage/utilitiespage/utilpage.dart';
 import 'package:firstapp/widgets/slidable_imageV.dart';
 import 'package:flutter/material.dart';
@@ -42,11 +43,16 @@ class HomePage extends StatelessWidget {
               Get.to(SlidableImage());
             },
             child: Text("Go to image page")),
-             ElevatedButton(
+        ElevatedButton(
             onPressed: () {
-              Get.to(Utilpage());
+              viewModel.onGotoUtilPage();
             },
-            child: Text("Go to util page"))
+            child: Text("Go to util page")),
+        ElevatedButton(
+            onPressed: () {
+              Get.to(LocationPage());
+            },
+            child: Text("Go to location page"))
       ],
     );
   }

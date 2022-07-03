@@ -2,6 +2,7 @@ import 'package:file_picker/file_picker.dart';
 import 'package:firstapp/screens/homepage/utilitiespage/video_playerV.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class Utilpage extends StatefulWidget {
@@ -55,7 +56,12 @@ class _UtilpageState extends State<Utilpage> {
             onPressed: () async {
               Get.to(LiteVideoPlayer());
             },
-            child: Text("open video"))
+            child: Text("open video")),
+        ElevatedButton(
+            onPressed: () async {
+              Share.share("Text to be shared",subject: "Subject");
+            },
+            child: Text("open Share dialog"))
       ],
     );
   }

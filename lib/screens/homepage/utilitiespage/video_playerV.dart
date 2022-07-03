@@ -25,7 +25,17 @@ class LiteVideoPlayer extends StatelessWidget {
       child: Stack(
         children: [
           VideoPlayer(viewModel.videoPlayerController),
-          Positioned(bottom: 10, child: _controlUi())
+          GestureDetector(
+            onTap: () {
+              viewModel.onVideoTap();
+            },
+            child: Container(
+              color: Colors.transparent,
+            ),
+          ),
+          viewModel.showControl
+              ? Positioned(bottom: 10, child: _controlUi())
+              : SizedBox()
         ],
       ),
     );
@@ -58,14 +68,23 @@ class LiteVideoPlayer extends StatelessWidget {
 
   _progressUi() {
     return Row(mainAxisAlignment: MainAxisAlignment.spaceAround, children: [
-      Text(viewModel.currentDuration),
-      Text(viewModel.totalDuration)
+      Text(viewModel.parseDuration(viewModel.currentDuration)),
+      Slider(
+          // divisions: 5,
+          min: 0.0,
+          max: double.parse(viewModel.totalDuration.inSeconds.toString()),
+          value: viewModel.sliderValue,
+          onChanged: (value) {
+            viewModel.onSliderChange(value);
+          }),
+      Text(viewModel.parseDuration(viewModel.totalDuration))
     ]);
   }
 }
 
 class LiteVideoPlayerViewModel extends GetxController {
   late VideoPlayerController videoPlayerController;
+  double sliderValue = 0.0;
 
   @override
   void onInit() {
@@ -73,16 +92,30 @@ class LiteVideoPlayerViewModel extends GetxController {
     super.onInit();
   }
 
+  onSliderChange(double value) {
+    sliderValue = value;
+    videoPlayerController.seekTo(Duration(seconds: value.toInt()));
+    update();
+  }
+
   _init() async {
     videoPlayerController = VideoPlayerController.network(
         "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_10mb.mp4");
     await videoPlayerController.initialize();
-    totalDuration = parseDuration(videoPlayerController.value.duration);
+    totalDuration = videoPlayerController.value.duration;
     videoPlayerController.addListener(
       () async {
-        currentDuration = parseDuration(await (videoPlayerController.position));
+        currentDuration = await (videoPlayerController.position);
+        sliderValue = double.parse(currentDuration!.inSeconds.toString());
+        update();
       },
     );
+    update();
+  }
+
+  bool showControl = true;
+  onVideoTap() {
+    showControl = !showControl;
     update();
   }
 
@@ -103,8 +136,8 @@ class LiteVideoPlayerViewModel extends GetxController {
   IconData playPauseIcon = Icons.play_arrow;
   bool isPlaying = false;
 
-  String totalDuration = "";
-  String currentDuration = "";
+  Duration totalDuration = Duration(seconds: 0);
+  Duration? currentDuration = Duration(seconds: 0);
 
   String parseDuration(Duration? duration) {
     String retVal = "";
@@ -115,5 +148,10 @@ class LiteVideoPlayerViewModel extends GetxController {
         " : " +
         (second < 10 ? "0$second" : "$second");
     return retVal;
+  }
+
+  @override
+  void onClose() async {
+    await videoPlayerController.pause();
   }
 }
